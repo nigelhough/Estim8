@@ -34,7 +34,7 @@ class pointsPokerGUI
 
     
     public function __construct() {
-        $this->storyClass = new pointsPoker();
+        $this->storyClass = new pointsPoker(); 
         $this->pointsPokerGUI();
     }
     
@@ -85,7 +85,7 @@ class pointsPokerGUI
     
     private function getStoryVotes() {
         
-        $this->$storyPointVotes = $storyClass->getVotes;
+        $this->storyPointVotes = $this->storyClass->getVotes;
         
     }
     
@@ -96,7 +96,7 @@ class pointsPokerGUI
         
         $html = "User Votes: ";
         
-        foreach($this->$storyPointVotes as $id => $option) {
+        foreach($this->storyPointVotes as $id => $option) {
             $html .= "".$option.", ";
         }
         
@@ -109,7 +109,7 @@ class pointsPokerGUI
     
     private function getFinalStoryPoints() {
         
-        $this->storyFinalPoints = $storyClass->getStoryPoints;
+        $this->storyFinalPoints = $this->storyClass->getStoryPoints;
     }
     
     private function showFinalButtons() {
@@ -143,7 +143,7 @@ class pointsPokerGUI
         
         
         foreach($this->votingOptions as $id => $option) {
-            $html .= "<a href='/?vote=".$id."'>".$option."</a>";
+            $html .= "<a href='?vote=".$id."'>".$option."</a>";
         }
                 
         echo $html;
@@ -158,7 +158,7 @@ class pointsPokerGUI
     
     private function getStory() {
 
-        $this->userStory = $storyClass->getUserStory();
+        $this->userStory = $this->storyClass->getUserStory();
         
     }
 
