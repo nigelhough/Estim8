@@ -38,11 +38,11 @@ class pointsPokerGUI
     }
     
     private function pointsPokerGUI() {
-
         //Initially Passing POST and SESSION variables so we can upgrade this later
         if($_POST) $this->storyClass->processInput($_POST, $_SESSION);
         
-        $status = $this->storyClass->getStatus();
+        $status = $this->storyClass->getState();
+        var_dump($status);
 
         include SITE_ROOT.'templates/header.php';
         switch($status) {
@@ -85,7 +85,7 @@ class pointsPokerGUI
     private function inputStory() {
         
         $html = "Enter your user story:"
-                . "<form type='post'>"
+                . "<form method='post'>"
                 . "<textarea id='userStory' name='userStory' class='form-control' placeholder='Enter your story...'></textarea><br/>"
                 . "<input type='submit' value='Estimate' class='btn btn-default' />"
                 . "</form>";

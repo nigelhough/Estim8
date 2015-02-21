@@ -13,7 +13,7 @@
 
 interface pointsPokerState {
     const INITIAL	= 0;
-    const VOTING 	= 2;
+    const VOTING 	= 1;
     const DECISION 	= 2;
     const RESULTS	= 3;
 }
