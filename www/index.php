@@ -1,22 +1,15 @@
-<html>
-<head>
-    <!-- JQuery Library -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<?php
+    //Error Reporting should be turned on in dev server config
+    //These should never be pushed to production
+    //Perhaps need a config or environment settings
+    error_reporting(E_ALL);
 
-<!-- JQuery UI -->
-<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-    
-    <title>Points Poker</title>
-    </head>
-    <body>
-        <h1>Points Poker</h1>
-        
-        <?php
-        
-            require_once('app/pointsPoker.php');
-            require_once('app/pointsPokerGUI.php');
-            
-        ?>
-    </body>
-</head>
+    //Set Project Path as a constant
+    define('SITE_ROOT',substr(__DIR__,0,strrpos(__DIR__,DIRECTORY_SEPARATOR)+1));
+
+    require_once SITE_ROOT.'app/pointsPokerGUI.php';
+
+    $ui = new pointsPokerGUI();
+
+
+

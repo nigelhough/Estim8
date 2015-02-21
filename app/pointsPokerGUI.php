@@ -1,4 +1,7 @@
 <?php
+require_once SITE_ROOT.'app/pointsPoker.php';
+require_once SITE_ROOT.'app/pointsPokerState.php';
+
 
 /**
  * Points Poker
@@ -23,57 +26,59 @@
 class pointsPokerGUI
 {
     
-    private $storyClass = pointsPoker;
+    private $storyClass;
     private $userStory;
     private $storyPointVotes;
     private $storyFinalPoints;
+
     
-    
-    
-    function __construct() {
-        $storyClass = new pointsPoker();
+    public function __construct() {
+        $this->storyClass = new pointsPoker();
+        $this->pointsPokerGUI();
     }
     
     private function pointsPokerGUI() {
+
+        //Initially Passing POST and SESSION variables so we can upgrade this later
+        if($_POST) $this->storyClass->processInput($_POST, $_SESSION);
         
-        if($_POST) $storyClass->processInput($_POST, $_SESSION);
-        
-        $status = $storyClass->getStatus();
-        
+        $status = $this->storyClass->getStatus();
+
+        include SITE_ROOT.'templates/header.php';
         switch($status) {
 
-            case 1:
+            case pointsPokerState::VOTING:
                 // Story added, show the voting buttons
-                getStory();
-                showStory();
-                showVotingOptions();
-                showButtons();
+                $this->getStory();
+                $this->showStory();
+                $this->showVotingOptions();
+                $this->showButtons();
                 break;
-            case 2:
+            case pointsPokerState::DECISION:
                 // Story added, votes add, show summary screen to choose vote
-                getStory();
-                showStory();
-                getStoryVotes();
-                showSummary();    
-                showVotingOptions();
-                showFinalButtons();
+                $this->getStory();
+                $this->showStory();
+                $this->getStoryVotes();
+                $this->showSummary();
+                $this->showVotingOptions();
+                $this->showFinalButtons();
                 break;
-            case 3:
+            case pointsPokerState::RESULTS:
                 // Story added, votes add, final vote chosen, show overall
-                getStory();
-                showStory();
-                getStoryVotes();
-                showSummary();
-                getFinalStoryPoints();
-                showFinalPoints();
+                $this->getStory();
+                $this->showStory();
+                $this->getStoryVotes();
+                $this->showSummary();
+                $this->getFinalStoryPoints();
+                $this->showFinalPoints();
                 break;
             default:
                 // Nothing happened, show the add user story GUI
-                inputStory();
+                $this->inputStory();
                 break;
         
         }
-        
+        include SITE_ROOT.'templates/footer.php';
     }
     
 
@@ -81,8 +86,8 @@ class pointsPokerGUI
         
         $html = "Enter your user story:"
                 . "<form type='post'>"
-                . "<textbox id='userStory' name='userStory'></textbox>"
-                . "<submit />"
+                . "<textarea id='userStory' name='userStory' class='form-control' placeholder='Enter your story...'></textarea><br/>"
+                . "<input type='submit' value='Estimate' class='btn btn-default' />"
                 . "</form>";
         
         echo $html;
@@ -96,17 +101,9 @@ class pointsPokerGUI
     }
     
     private function getStory() {
-        
-        $userStory = $storyClass->getUserStory;
-        
-    }
-    
-    
-    
-    
-    function __destruct() {
+
+        $this->userStory = $storyClass->getUserStory();
         
     }
-    
-    
+
 }

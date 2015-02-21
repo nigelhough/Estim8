@@ -1,4 +1,6 @@
 <?php
+require_once SITE_ROOT.'app/pointsPokerState.php';
+
 /**
  * Points Poker
  *
@@ -21,10 +23,43 @@
 class pointsPoker {
 
     /**
+     * Current State of a Points Poker Session
+     *
+     * @var pointsPokerState
+     */
+    private $state = pointsPokerState::INITIAL;
+
+    /**
+     * Story for Current Session
+     *
+     * @var pointsPokerState
+     */
+    private $story = null;
+
+    /**
      * Constructor
      *
      */
     function __construct() {
+        session_start();
+
+        //Check for a Points Poker Session ID, could be used in future multi user games
+        if(isset($_SESSION['POINTS_POKER'])
+            && isset($_SESSION['POINTS_POKER']['SESSION_ID'])
+            && $_SESSION['POINTS_POKER']['SESSION_ID'] != '') {
+
+        } else {
+            $_SESSION['POINTS_POKER']['SESSION_ID'] = md5(uniqid());
+        }
+
+        //See if a story has already been logged against this session
+        if(isset($_SESSION['POINTS_POKER']['SESSION_ID']['STORY'])) {
+            //Set the class story and we are at least at voting stage
+            $this->story = $_SESSION['POINTS_POKER']['SESSION_ID']['STORY'];
+            $this->state = pointsPokerState::VOTING;
+        }
+
+
 
     }
     
@@ -55,8 +90,10 @@ class pointsPoker {
      * 
      */
     
-    public function processInput($post, $session) {
-        
+    public function processInput($userInput, $persistnatState) {
+        var_dump($userInput);
+        var_dump($persistnatState);
+        exit;
     }
     
     
