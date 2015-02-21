@@ -72,6 +72,7 @@ class pointsPokerGUI
                 $this->showSummary();
                 $this->getFinalStoryPoints();
                 $this->showFinalPoints();
+                $this->showFinalButtons();
                 break;
             default:
                 // Nothing happened, show the add user story GUI
@@ -85,7 +86,7 @@ class pointsPokerGUI
     
     private function getStoryVotes() {
         
-        $this->storyPointVotes = $this->storyClass->getVotes;
+        $this->storyPointVotes = $this->storyClass->getVotes();
         
     }
     
@@ -94,7 +95,7 @@ class pointsPokerGUI
     private function showSummary() {
         
         
-        $html = "User Votes: ";
+        $html = "<br><br>User Votes: ";
         
         foreach($this->storyPointVotes as $id => $option) {
             $html .= "".$option.", ";
@@ -109,17 +110,23 @@ class pointsPokerGUI
     
     private function getFinalStoryPoints() {
         
-        $this->storyFinalPoints = $this->storyClass->getStoryPoints;
+        $this->storyFinalPoints = $this->storyClass->getResult();
     }
     
     private function showFinalButtons() {
+     
+        
+        $html = "<br><br><a href='?reset=1'>Reset</a>";
+        
+        echo $html;
+        
         
     }
     
     
     private function showFinalPoints() {
         
-        $html = "Overall Story Points: ". $this->storyFinalPoints;
+        $html = "<br><br>Overall Story Points: ". $this->storyFinalPoints;
         
         echo $html;
         
@@ -127,6 +134,9 @@ class pointsPokerGUI
     
     private function showButtons() {
         
+        $html = "<br><br><a href='?decision=1'>Finish Voting</a> || <a href='?reset=1'>Reset</a>";
+        
+        echo $html;
     }
     private function inputStory() {
         
@@ -141,9 +151,9 @@ class pointsPokerGUI
     
     private function showVotingOptions() {
         
-        $html = "Vote options: ";
+        $html = "<br><br>Vote options:<br> ";
         foreach($this->votingOptions as $id => $option) {
-            $html .= "<a href='?vote=".$id."'>".$option."</a>";
+            $html .= "<a href='?vote=".$id."'>".$option."</a> || ";
         }
                 
         echo $html;
