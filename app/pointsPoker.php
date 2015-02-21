@@ -55,7 +55,7 @@ class pointsPoker {
      *
      * @var array
      */
-    private $votes = null;
+    private $votes = array();
     
     /**
      * Constructor
@@ -82,15 +82,20 @@ class pointsPoker {
         }
 
         //Load Votes from Session
+        if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'])
+        && is_array($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'])
+        && count($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES']) > 0) {
+            $this->votes = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
+        }
 
         //If a Result has been submitted, we are at the results stage
         if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'])
         && $_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'] != null) {
-            exit('Set Result');
             $this->setResult($_SESSION['POINTS_POKER'][$this->sessionID]['RESULT']);
             $this->setState(pointsPokerState::RESULT);
         }
 
+        //If a Decsion is set we are at results stage
         if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['DECISION'])
         && $_SESSION['POINTS_POKER'][$this->sessionID]['DECISION'] != null) {
             $this->setState(pointsPokerState::RESULT);
@@ -106,10 +111,9 @@ class pointsPoker {
     public function processInput($userInput) {
 
         //Reset the Session
-        if(isset($userInput['reset'])) {
+        if(isset($userInput['reset']) && $userInput['reset']==$this->sessionID) {
             // Reset the system
             $this->reset();
-            //return;
         }
 
         //If we are at initial state and a story is passed
@@ -133,9 +137,9 @@ class pointsPoker {
 
         //If we are at voting state and a final decision is passed
         if($this->state === pointsPokerState::VOTING
-            && isset($userInput['end_voting'])
-            && $userInput['end_voting']) {
-
+        && isset($userInput['end_voting'])
+        && $userInput['end_voting']
+        && isset($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'])) {
             //Set to make decsion mode
             $this->setState(pointsPokerState::DECISION);
         }
@@ -144,40 +148,60 @@ class pointsPoker {
         if(isset($userInput['decision']) && $userInput['decision'] != '') {
 
             //Set the result
-            $this->result = $userInput['decision'];
+            $this->setResult($userInput['decision']);
             $this->setState(pointsPokerState::RESULT);
         }
-
-        /*
-        var_dump($this->state);
-        var_dump($this->story);
-        var_dump($this->result);
-
-        var_dump($userInput);
-        var_dump($persistentState);
-        exit;
-        */
     }
 
+    /**
+     * Reset Session
+     *
+     *
+     */
     public function reset() {
         //Reset Class Variables
-        $this->sessionID = null;
-        $_SESSION['POINTS_POKER']['SESSION_ID'] = null;
+        $this->setSessionID(null);
         $this->story = null;
         $this->result = null;
-        $this->votes = null;
+        $this->votes = array();
         $this->setState(pointsPokerState::INITIAL);
-        header('Location:/');
     }
-    
+
+    /**
+     * Set SessionID
+     *
+     *
+     */
+    public function setSessionID($sessionID) {
+        $_SESSION['POINTS_POKER']['SESSION_ID'] = $sessionID;
+        $this->sessionID = $sessionID;
+    }
+
+    /**
+     * Get SessionID
+     *
+     * @return string
+     */
+    public function getSessionID() {
+        return $this->sessionID;
+    }
+
     /**
      * Returns an array of all the current votes
      * 
-     * 
+     * @return array
      */
     public function getVotes() {
-        $this->votes = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
         return $this->votes;
+    }
+
+    /**
+     * Returns an array of all the current votes
+     *
+     *
+     */
+    public function getVotesCount() {
+        return count($this->votes);
     }
     
     /**
@@ -190,7 +214,7 @@ class pointsPoker {
             $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'] = array();
         }
         $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'][] = $vote;
-        $this->getVotes();
+        $this->votes = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
     }
     
     /**
@@ -218,7 +242,7 @@ class pointsPoker {
     /**
      * Returns the string of the current user story
      *
-     * return string
+     * @return string
      */
     public function getUserStory() {
         return $this->story;
@@ -247,7 +271,7 @@ class pointsPoker {
     /**
      * Returns the overall story vote
      *
-     * return int
+     * @return int
      */
     public function getResult() {
         return $this->result;

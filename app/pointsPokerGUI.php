@@ -34,7 +34,6 @@ class pointsPokerGUI
 
     
     public function __construct() {
-        /*session_start(); var_dump($_SESSION['POINTS_POKER']);*/
         $this->storyClass = new pointsPoker(); 
         $this->pointsPokerGUI();
     }
@@ -81,7 +80,6 @@ class pointsPokerGUI
                 break;
         
         }
-        include SITE_ROOT.'templates/footer.php';
     }
     
     
@@ -96,7 +94,7 @@ class pointsPokerGUI
     private function showSummary() {
         
 
-        $html = "<br><br>User Votes: ";
+        $html = "<p>User Votes:</p>";
 
         foreach($this->storyPointVotes as $id => $option) {
             $html .= "".$option.", ";
@@ -115,9 +113,8 @@ class pointsPokerGUI
     }
     
     private function showFinalButtons() {
-     
-        
-        $html = "<br><br><a href='?reset=1'>Reset</a>";
+
+        $html = "<br><br><a href='?reset=".$this->storyClass->getSessionID()."'>Reset</a>";
         
         echo $html;
         
@@ -134,15 +131,17 @@ class pointsPokerGUI
     }
     
     private function showButtons() {
-        
-        $html = "<br><br><a href='?end_voting=1'>Finish Voting</a> || <a href='?reset=1'>Reset</a>";
+        $html = '<p>';
+        if($this->storyClass->getVotesCount()) {
+            $html .= "<a href='?end_voting=1'>Finish Voting</a> || ";
+        }
+        $html .= "<a href='?reset=".$this->storyClass->getSessionID()."'>Reset</a></p>";
         
         echo $html;
     }
     private function inputStory() {
         
-        $html = "Enter your user story:"
-                . "<form method='post'>"
+        $html = "<form method='post'>"
                 . "<textarea id='userStory' name='userStory' class='form-control' placeholder='Enter your story...'></textarea><br/>"
                 . "<input type='submit' value='Estimate' class='btn btn-default' />"
                 . "</form>";
@@ -167,8 +166,9 @@ class pointsPokerGUI
     
     private function showStory() {
         
-        $html = "User Story: ". $this->userStory;
-        
+        $html = "<p>User Story: </p><p><i>". nl2br($this->userStory) . "</i></p>";
+        $html .= "<p>".$this->storyClass->getVotesCount()." Votes logged";
+
         echo $html;
     }
     
