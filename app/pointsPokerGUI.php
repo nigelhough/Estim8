@@ -34,16 +34,17 @@ class pointsPokerGUI
 
     
     public function __construct() {
+        /*session_start(); var_dump($_SESSION['POINTS_POKER']);*/
         $this->storyClass = new pointsPoker(); 
         $this->pointsPokerGUI();
     }
     
     private function pointsPokerGUI() {
         //Initially Passing POST and SESSION variables so we can upgrade this later
-        if($_POST || $_GET) $this->storyClass->processInput($_REQUEST);
-        
+        if($_REQUEST) $this->storyClass->processInput($_REQUEST);
+
         $status = $this->storyClass->getState();
-        var_dump($status);
+        //var_dump($status);
 
         include SITE_ROOT.'templates/header.php';
         switch($status) {
@@ -61,10 +62,10 @@ class pointsPokerGUI
                 $this->showStory();
                 $this->getStoryVotes();
                 $this->showSummary();
-                $this->showVotingOptions();
+                $this->showVotingOptions(true);
                 $this->showFinalButtons();
                 break;
-            case pointsPokerState::RESULTS:
+            case pointsPokerState::RESULT:
                 // Story added, votes add, final vote chosen, show overall
                 $this->getStory();
                 $this->showStory();
@@ -94,9 +95,9 @@ class pointsPokerGUI
     
     private function showSummary() {
         
-        
+
         $html = "<br><br>User Votes: ";
-        
+
         foreach($this->storyPointVotes as $id => $option) {
             $html .= "".$option.", ";
         }
@@ -134,7 +135,7 @@ class pointsPokerGUI
     
     private function showButtons() {
         
-        $html = "<br><br><a href='?decision=1'>Finish Voting</a> || <a href='?reset=1'>Reset</a>";
+        $html = "<br><br><a href='?end_voting=1'>Finish Voting</a> || <a href='?reset=1'>Reset</a>";
         
         echo $html;
     }
@@ -149,11 +150,16 @@ class pointsPokerGUI
         echo $html;
     }
     
-    private function showVotingOptions() {
-        
-        $html = "<br><br>Vote options:<br> ";
+    private function showVotingOptions($final=false) {
+        $param = 'vote';
+        if($final) {
+            $html = "<br><br>Final Voting Decsion <br> ";
+            $param = 'decision';
+        } else {
+            $html = "<br><br>Vote options:<br> ";
+        }
         foreach($this->votingOptions as $id => $option) {
-            $html .= "<a href='?vote=".$id."'>".$option."</a> || ";
+            $html .= "<a href='?$param=".$id."'>".$option."</a> || ";
         }
                 
         echo $html;
