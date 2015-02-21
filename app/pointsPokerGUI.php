@@ -30,6 +30,7 @@ class pointsPokerGUI
     private $userStory;
     private $storyPointVotes;
     private $storyFinalPoints;
+    private $votingOptions = array(0 => 0, 1 => 1, 2 => 2, 3 => 3, 5 => 5, 8 => 8, 13 => 13, 20 => 20, 40 => 40, 100 => 100, 'U' => 'Unknown');
 
     
     public function __construct() {
@@ -40,7 +41,7 @@ class pointsPokerGUI
     private function pointsPokerGUI() {
 
         //Initially Passing POST and SESSION variables so we can upgrade this later
-        if($_POST) $this->storyClass->processInput($_POST, $_SESSION);
+        if($_POST || $_GET) $this->storyClass->processInput($_REQUEST);
         
         $status = $this->storyClass->getStatus();
 
@@ -81,7 +82,52 @@ class pointsPokerGUI
         include SITE_ROOT.'templates/footer.php';
     }
     
-
+    
+    private function getStoryVotes() {
+        
+        $this->$storyPointVotes = $storyClass->getVotes;
+        
+    }
+    
+    
+    
+    private function showSummary() {
+        
+        
+        $html = "User Votes: ";
+        
+        foreach($this->$storyPointVotes as $id => $option) {
+            $html .= "".$option.", ";
+        }
+        
+        echo $html;
+        
+        
+    }
+    
+    
+    
+    private function getFinalStoryPoints() {
+        
+        $this->storyFinalPoints = $storyClass->getStoryPoints;
+    }
+    
+    private function showFinalButtons() {
+        
+    }
+    
+    
+    private function showFinalPoints() {
+        
+        $html = "Overall Story Points: ". $this->storyFinalPoints;
+        
+        echo $html;
+        
+    }
+    
+    private function showButtons() {
+        
+    }
     private function inputStory() {
         
         $html = "Enter your user story:"
@@ -93,9 +139,19 @@ class pointsPokerGUI
         echo $html;
     }
     
-    private function showStory($userStory) {
+    private function showVotingOptions() {
         
-        $html = "User Story: $userStory";
+        
+        foreach($this->votingOptions as $id => $option) {
+            $html .= "<a href='/?vote=".$id."'>".$option."</a>";
+        }
+                
+        echo $html;
+    }
+    
+    private function showStory() {
+        
+        $html = "User Story: ". $this->userStory;
         
         echo $html;
     }
