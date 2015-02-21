@@ -141,7 +141,7 @@ class pointsPokerGUI
     
     private function showVotingOptions() {
         
-        
+        $html = "Vote options: ";
         foreach($this->votingOptions as $id => $option) {
             $html .= "<a href='?vote=".$id."'>".$option."</a>";
         }
