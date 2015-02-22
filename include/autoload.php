@@ -1,7 +1,7 @@
 <?php
 
 spl_autoload_register(function ($class) {
-    if(preg_match("/^votingoptions/i", $class)) {
+    if(preg_match("/^votingoptions|utils/i", $class)) {
         $parts = explode("\\", $class);
         $className = array_pop($parts);
         $ds = DIRECTORY_SEPARATOR;
