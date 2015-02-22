@@ -57,6 +57,13 @@ class pointsPoker {
      */
     private $votes = array();
     
+    /*
+     * Set the points poker result
+     *
+     * @var array
+     */
+    private $votingOptions = array(0 => 0, 1 => 1, 2 => 2, 3 => 3, 5 => 5, 8 => 8, 13 => 13, 20 => 20, 40 => 40, 100 => 100, 'U' => 'Unknown');
+    
     /**
      * Constructor
      *
@@ -247,6 +254,17 @@ class pointsPoker {
     public function getUserStory() {
         return $this->story;
     }
+    
+    
+    /**
+     * Returns the array of possible voting options
+     *
+     * @return array
+     */
+    public function getVotingOptions() {
+        return $this->votingOptions;
+    }
+    
 
     /*
      * Set the points poker story

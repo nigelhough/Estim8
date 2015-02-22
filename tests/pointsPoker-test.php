@@ -11,4 +11,15 @@ class PointsPokerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('pointsPoker', $pointsPoker);
 
     }
+    
+    public function testAttributes()
+    {
+        $this->assertClassHasAttribute('sessionID', 'String');
+        $this->assertClassHasAttribute('story', 'String');
+        $this->assertClassHasAttribute('state', 'Int');
+        $this->assertClassHasAttribute('result', 'Int');
+        $this->assertClassHasAttribute('votes', 'Array');
+        $this->assertClassHasAttribute('votingOptions', 'Array');
+
+    }
 }

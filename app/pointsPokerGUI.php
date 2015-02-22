@@ -2,7 +2,6 @@
 require_once SITE_ROOT.'app/pointsPoker.php';
 require_once SITE_ROOT.'app/pointsPokerState.php';
 
-
 /**
  * Points Poker
  *
@@ -26,18 +25,27 @@ require_once SITE_ROOT.'app/pointsPokerState.php';
 class pointsPokerGUI
 {
     
-    private $storyClass;
-    private $userStory;
-    private $storyPointVotes;
-    private $storyFinalPoints;
-    private $votingOptions = array(0 => 0, 1 => 1, 2 => 2, 3 => 3, 5 => 5, 8 => 8, 13 => 13, 20 => 20, 40 => 40, 100 => 100, 'U' => 'Unknown');
+    /*
+     * An instance of the storyClass class
+     *
+     * @var class
+     */
+    private $storyClass; 
 
-    
+    /**
+     * Constructor
+     *
+     */
     public function __construct() {
         $this->storyClass = new pointsPoker(); 
         $this->pointsPokerGUI();
     }
     
+    /*
+     * Processes the current state of the system and displays the correct screen
+     *
+     * 
+     */
     private function pointsPokerGUI() {
         //Initially Passing POST and SESSION variables so we can upgrade this later
         if($_REQUEST) $this->storyClass->processInput($_REQUEST);
@@ -46,33 +54,28 @@ class pointsPokerGUI
         //var_dump($status);
 
         include SITE_ROOT.'templates/header.php';
+        
         switch($status) {
 
             case pointsPokerState::VOTING:
                 // Story added, show the voting buttons
-                $this->getStory();
                 $this->showStory();
                 $this->showVotingOptions();
                 $this->showButtons();
                 break;
             case pointsPokerState::DECISION:
                 // Story added, votes add, show summary screen to choose vote
-                $this->getStory();
                 $this->showStory();
-                $this->getStoryVotes();
-                $this->showSummary();
-                $this->showVotingOptions(true);
-                $this->showFinalButtons();
+                $this->showVoteSummary();
+                $this->showVotingOptions();               
+                $this->showButtons();
                 break;
             case pointsPokerState::RESULT:
                 // Story added, votes add, final vote chosen, show overall
-                $this->getStory();
                 $this->showStory();
-                $this->getStoryVotes();
-                $this->showSummary();
-                $this->getFinalStoryPoints();
-                $this->showFinalPoints();
-                $this->showFinalButtons();
+                $this->showVoteSummary();
+                $this->showFinalPoints();                
+                $this->showButtons();
                 break;
             default:
                 // Nothing happened, show the add user story GUI
@@ -80,65 +83,69 @@ class pointsPokerGUI
                 break;
         
         }
-    }
+    }       
     
-    
-    private function getStoryVotes() {
-        
-        $this->storyPointVotes = $this->storyClass->getVotes();
-        
-    }
-    
-    
-    
-    private function showSummary() {
-        
+    /*
+     * Shows a summary of all the user votes submit
+     *
+     * 
+     */
+    private function showVoteSummary() {        
 
         $html = "<p>User Votes:</p>";
-
-        foreach($this->storyPointVotes as $id => $option) {
-            $html .= "".$option.", ";
+        
+        $array = $this->storyClass->getVotes();
+        $first = key($array);
+        
+        foreach($array as $id => $option) {
+            $html .= ($id === $first) ? "":", ";
+            $html .= "".$option;
         }
         
-        echo $html;
+        echo $html;        
         
-        
-    }
+    }    
     
     
-    
-    private function getFinalStoryPoints() {
-        
-        $this->storyFinalPoints = $this->storyClass->getResult();
-    }
-    
-    private function showFinalButtons() {
-
-        $html = "<br><br><a href='?reset=".$this->storyClass->getSessionID()."'>Reset</a>";
-        
-        echo $html;
-        
-        
-    }
-    
-    
+    /*
+     * Displays the selected overall story points
+     *
+     * 
+     */
     private function showFinalPoints() {
         
-        $html = "<br><br>Overall Story Points: ". $this->storyFinalPoints;
+        $html = "<br><br>Overall Story Points: ". $this->storyClass->getResult();
         
         echo $html;
         
     }
     
+    /*
+     * Displays the relevant buttons depending on the state of the system
+     *
+     * 
+     */
     private function showButtons() {
-        $html = '<p>';
-        if($this->storyClass->getVotesCount()) {
-            $html .= "<a href='?end_voting=1'>Finish Voting</a> || ";
-        }
-        $html .= "<a href='?reset=".$this->storyClass->getSessionID()."'>Reset</a></p>";
+        $html = '<br><br><p>';
+        if($this->storyClass->getState() === pointsPokerState::VOTING) {
+            if($this->storyClass->getVotesCount()) {
+                $html .= "<a href='?end_voting=1'>Finish Voting</a> || ";
+            }
+        } 
+        
+        $html .= "<a href='?reset=".$this->storyClass->getSessionID()."'>Reset</a>";
+        
+        $html .= "</p>";
         
         echo $html;
+        
     }
+    
+    /*
+     * Displays a text box for the user to input their story
+     *
+     * 
+     */
     private function inputStory() {
         
         $html = "<form method='post'>"
@@ -147,35 +154,48 @@ class pointsPokerGUI
                 . "</form>";
         
         echo $html;
+        
     }
     
-    private function showVotingOptions($final=false) {
+    /*
+     * Displays the possible voting options
+     *
+     * 
+     */
+    private function showVotingOptions() {
+        
         $param = 'vote';
-        if($final) {
-            $html = "<br><br>Final Voting Decsion <br> ";
+        if($this->storyClass->getState() === pointsPokerState::DECISION) {
+            
+            $html = "<br><br>Final Voting Decision <br> ";
             $param = 'decision';
+            
         } else {
+            
             $html = "<br><br>Vote options:<br> ";
         }
-        foreach($this->votingOptions as $id => $option) {
+        
+        foreach($this->storyClass->getVotingOptions() as $id => $option) {
+            
             $html .= "<a href='?$param=".$id."'>".$option."</a> || ";
+            
         }
                 
         echo $html;
     }
     
+    /*
+     * Shows the users entered user story
+     *
+     * 
+     */
     private function showStory() {
         
-        $html = "<p>User Story: </p><p><i>". nl2br($this->userStory) . "</i></p>";
+        $html = "<p>User Story: </p><p><i>". nl2br($this->storyClass->getUserStory()) . "</i></p>";
         $html .= "<p>".$this->storyClass->getVotesCount()." Votes logged";
 
         echo $html;
-    }
-    
-    private function getStory() {
-
-        $this->userStory = $this->storyClass->getUserStory();
         
-    }
+    }    
 
 }
