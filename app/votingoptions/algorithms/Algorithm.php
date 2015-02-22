@@ -10,8 +10,13 @@ abstract class Algorithm {
     protected $options = array();
 
     protected $optionsGenerated = false;
+    protected $requestedOptions;
 
-    protected abstract function generateOptions();
+    public function __construct($requestedOptions = 11) {
+        $this->requestedOptions = $requestedOptions;
+    }
+
+    protected abstract function generateOptions($requestedOptions);
 
     /**
      * Return available voting options
@@ -21,7 +26,7 @@ abstract class Algorithm {
     public function getOptions(){
         if(!$this->optionsGenerated) {
             // generate options
-            $this->generateOptions();
+            $this->generateOptions($this->requestedOptions - 1);
 
             // add the "unknown" option
             $this->addOption("U", "Unknown");

@@ -1,15 +1,22 @@
 <?php
 
-class VotingOptionAlgorithmTest extends PHPUnit_Framework_TestCase {
+class FibonacciVotingOptionAlgorithmTest extends PHPUnit_Framework_TestCase {
 
-    public function testFibonacci() {
-        $algo = new \VotingOptions\Algorithms\Fibonacci();
+    public function testConstructor()
+    {
+        $algo = new \VotingOptions\Algorithms\Fibonacci(4);
         $options = $algo->getOptions();
 
         // test that an array of options is generated
-        if(!is_array($options)) {
-            $this->fail();
-        }
+        $this->assertTrue(is_array($options));
+
+        // test that the number of generated options matches the requested number
+        $this->assertEquals(4, sizeof($options));
+    }
+
+    public function testOptions() {
+        $algo = new \VotingOptions\Algorithms\Fibonacci();
+        $options = $algo->getOptions();
 
         $tempOptions = $options;
 

@@ -4,9 +4,9 @@ namespace VotingOptions\Algorithms;
 
 class Fibonacci extends Algorithm {
 
-    protected function generateOptions() {
-        // Generate 12 VotingOptions using the Fibonacci algo.
-        $this->fibonacciIterative(12);
+    protected function generateOptions($requestedOptions) {
+        // Generate VotingOptions using the Fibonacci algo.
+        $this->fibonacciIterative($requestedOptions);
     }
 
     /**
@@ -27,7 +27,7 @@ class Fibonacci extends Algorithm {
         $prev = 1;
         $result = 0;
 
-        for ($i = 2; $i <= $n; $i++) {
+        for ($i = 2; $i <= $n + 1; $i++) {
             $result = $prev + $prevPrev;
             $prevPrev = $prev;
             $prev = $result;
