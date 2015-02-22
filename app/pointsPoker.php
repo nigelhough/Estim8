@@ -58,18 +58,21 @@ class pointsPoker {
     private $votes = array();
     
     /*
-     * Set the points poker result
+     * The algorithm that generates the voting options
      *
-     * @var array
+     * @var \VotingOptions\Algorithms\Algorithm
      */
-    private $votingOptions = array(0 => 0, 1 => 1, 2 => 2, 3 => 3, 5 => 5, 8 => 8, 13 => 13, 20 => 20, 40 => 40, 100 => 100, 'U' => 'Unknown');
+    private $votingOptionsGeneratorAlgorithm;
     
     /**
      * Constructor
      *
+     * @param \VotingOptions\Algorithms\Algorithm $algorithm
      */
-    function __construct() {
+    function __construct(\VotingOptions\Algorithms\Algorithm $algorithm) {
         session_start();
+
+        $this->votingOptionsGeneratorAlgorithm = $algorithm;
 
         //Check for a Points Poker Session ID, could be used in future multi user games
         if(!(isset($_SESSION['POINTS_POKER'])
@@ -262,7 +265,7 @@ class pointsPoker {
      * @return array
      */
     public function getVotingOptions() {
-        return $this->votingOptions;
+        return $this->votingOptionsGeneratorAlgorithm->getOptions();
     }
     
 

@@ -37,7 +37,7 @@ class pointsPokerGUI
      *
      */
     public function __construct() {
-        $this->storyClass = new pointsPoker(); 
+        $this->storyClass = new pointsPoker(new \VotingOptions\Algorithms\Fibonacci());
         $this->pointsPokerGUI();
     }
     
@@ -181,7 +181,7 @@ class pointsPokerGUI
         $html .= "<div class='btn-group'>";
         foreach($this->storyClass->getVotingOptions() as $id => $option) {
             
-            $html .= "<a href='?$param=".$id."' class='btn btn-default' >".$option."</a>";
+            $html .= "<a href='?$param=".$option->getKey()."' class='btn btn-default' >".$option->getValue()."</a>";
             
         }
         $html .= "</div>";
