@@ -9,6 +9,8 @@
 
     require_once SITE_ROOT.'include/autoload.php';
 
+    \Utils\Config::parseConfig();
+
     require_once SITE_ROOT.'app/pointsPokerGUI.php';
 
     $ui = new pointsPokerGUI();
