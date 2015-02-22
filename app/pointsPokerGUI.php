@@ -83,6 +83,8 @@ class pointsPokerGUI
                 break;
         
         }
+
+        include SITE_ROOT.'templates/footer.php';
     }       
     
     /*
@@ -90,18 +92,19 @@ class pointsPokerGUI
      *
      * 
      */
-    private function showVoteSummary() {        
+    private function showVoteSummary() {
 
-        $html = "<p>User Votes:</p>";
+        $votes = $this->storyClass->getVotes();
+
+        $html = "<h4>User Votes:</h4>";
         
-        $array = $this->storyClass->getVotes();
-        $first = key($array);
-        
-        foreach($array as $id => $option) {
-            $html .= ($id === $first) ? "":", ";
-            $html .= "".$option;
+
+        $html .= "<ol>";
+        foreach($votes as $vote) {
+            $html .= "<li>".$vote."</li>";
         }
-        
+        $html .= "</ol>";
+
         echo $html;        
         
     }    
@@ -114,7 +117,7 @@ class pointsPokerGUI
      */
     private function showFinalPoints() {
         
-        $html = "<br><br>Overall Story Points: ". $this->storyClass->getResult();
+        $html = "<h2>Overall Story Points: ". $this->storyClass->getResult()."</h2>";
         
         echo $html;
         
@@ -126,16 +129,16 @@ class pointsPokerGUI
      * 
      */
     private function showButtons() {
-        $html = '<br><br><p>';
+        $html = '<div class="poker-buttons-pane">';
         if($this->storyClass->getState() === pointsPokerState::VOTING) {
             if($this->storyClass->getVotesCount()) {
-                $html .= "<a href='?end_voting=1'>Finish Voting</a> || ";
+                $html .= "<a href='?end_voting=1' class='poker-button btn btn-success'>Finish Voting</a>";
             }
         } 
         
-        $html .= "<a href='?reset=".$this->storyClass->getSessionID()."'>Reset</a>";
+        $html .= "<a href='?reset=".$this->storyClass->getSessionID()."' class='poker-button btn btn-danger'>Reset</a>";
         
-        $html .= "</p>";
+        $html .= "</div>";
         
         echo $html;
         
@@ -167,20 +170,22 @@ class pointsPokerGUI
         $param = 'vote';
         if($this->storyClass->getState() === pointsPokerState::DECISION) {
             
-            $html = "<br><br>Final Voting Decision <br> ";
+            $html = "<br/><h4>Final Voting Decision</h4>";
             $param = 'decision';
             
         } else {
             
-            $html = "<br><br>Vote options:<br> ";
+            $html = "<br/><h4>Vote options:</h4> ";
         }
-        
+
+        $html .= "<div class='btn-group'>";
         foreach($this->storyClass->getVotingOptions() as $id => $option) {
             
-            $html .= "<a href='?$param=".$id."'>".$option."</a> || ";
+            $html .= "<a href='?$param=".$id."' class='btn btn-default' >".$option."</a>";
             
         }
-                
+        $html .= "</div>";
+
         echo $html;
     }
     
@@ -191,8 +196,9 @@ class pointsPokerGUI
      */
     private function showStory() {
         
-        $html = "<p>User Story: </p><p><i>". nl2br($this->storyClass->getUserStory()) . "</i></p>";
-        $html .= "<p>".$this->storyClass->getVotesCount()." Votes logged";
+        $html = "<h2>User Story: </h3>
+        <div class='well'>". nl2br($this->storyClass->getUserStory()) . "</div>
+        <h4>".$this->storyClass->getVotesCount()." Votes logged</h4>";
 
         echo $html;
         
