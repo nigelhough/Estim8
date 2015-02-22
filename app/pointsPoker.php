@@ -66,13 +66,11 @@ class pointsPoker {
     
     /**
      * Constructor
-     *
-     * @param \VotingOptions\Algorithms\Algorithm $algorithm
      */
-    function __construct(\VotingOptions\Algorithms\Algorithm $algorithm) {
+    function __construct() {
         session_start();
 
-        $this->votingOptionsGeneratorAlgorithm = $algorithm;
+        $this->initVotingOptionsGeneratorAlgorithm();
 
         //Check for a Points Poker Session ID, could be used in future multi user games
         if(!(isset($_SESSION['POINTS_POKER'])
@@ -111,6 +109,24 @@ class pointsPoker {
             $this->setState(pointsPokerState::RESULT);
         }
 
+    }
+
+    /**
+     * Initialise voting option generator algorithm class
+     */
+    private function initVotingOptionsGeneratorAlgorithm() {
+        $algoNamespace = "\\VotingOptions\\Algorithms\\";
+
+        $algoClass = $algoNamespace . \Utils\Config::get("voting_options_generator_algorithm");
+        if(!class_exists($algoClass) || !in_array("VotingOptions\\Algorithms\\Algorithm", class_parents($algoClass))) {
+            $algoClass = $algoNamespace . "Fibonacci";
+        }
+
+        $requestedOptions = \Utils\Config::get("number_of_voting_options");
+        if(!is_numeric($requestedOptions)) {
+            $requestedOptions = 12;
+        }
+        $this->votingOptionsGeneratorAlgorithm = new $algoClass($requestedOptions);
     }
 
     /**

@@ -37,7 +37,7 @@ class pointsPokerGUI
      *
      */
     public function __construct() {
-        $this->storyClass = new pointsPoker(new \VotingOptions\Algorithms\Fibonacci());
+        $this->storyClass = new pointsPoker();
         $this->pointsPokerGUI();
     }
     
