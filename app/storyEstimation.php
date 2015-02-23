@@ -62,18 +62,19 @@ class storyEstimation {
     private $votingRounds = array(array());
     
     /*
-     * Set the points poker result
+     * The algorithm that generates the voting options
      *
-     * @var array
+     * @var \VotingOptions\Algorithms\Algorithm
      */
-    private $votingOptions = array(0 => 0, 1 => 1, 2 => 2, 3 => 3, 5 => 5, 8 => 8, 13 => 13, 20 => 20, 40 => 40, 100 => 100, 'U' => 'Unknown');
+    private $votingOptionsGeneratorAlgorithm;
     
     /**
      * Constructor
-     *
      */
     function __construct() {
         session_start();
+
+        $this->initVotingOptionsGeneratorAlgorithm();
 
         //Check for a Points Poker Session ID, could be used in future multi user games
         if(!(isset($_SESSION['POINTS_POKER'])
@@ -112,6 +113,24 @@ class storyEstimation {
             $this->setState(storyEstimationState::RESULT);
         }
 
+    }
+
+    /**
+     * Initialise voting option generator algorithm class
+     */
+    private function initVotingOptionsGeneratorAlgorithm() {
+        $algoNamespace = "\\VotingOptions\\Algorithms\\";
+
+        $algoClass = $algoNamespace . \Utils\Config::get("voting_options_generator_algorithm");
+        if(!class_exists($algoClass) || !in_array("VotingOptions\\Algorithms\\Algorithm", class_parents($algoClass))) {
+            $algoClass = $algoNamespace . "Fibonacci";
+        }
+
+        $requestedOptions = \Utils\Config::get("number_of_voting_options");
+        if(!is_numeric($requestedOptions)) {
+            $requestedOptions = 12;
+        }
+        $this->votingOptionsGeneratorAlgorithm = new $algoClass($requestedOptions);
     }
 
     /**
@@ -297,7 +316,7 @@ class storyEstimation {
      * @return array
      */
     public function getVotingOptions() {
-        return $this->votingOptions;
+        return $this->votingOptionsGeneratorAlgorithm->getOptions();
     }
     
 

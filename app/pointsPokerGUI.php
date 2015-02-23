@@ -196,8 +196,8 @@ class pointsPokerGUI
         $html .= "<div class='btn-group'>";
         foreach($this->storyEstimation->getVotingOptions() as $id => $option) {
             
-            $html .= "<a href='?$param=".$id."&count=".$this->storyEstimation->getVotesCount()."' class='btn btn-default' >".$option."</a>";
-            
+            $html .= "<a href='?$param=".$option->getKey()."&count=".$this->storyEstimation->getVotesCount()."' class='btn btn-default' >".$option->getValue()."</a>";
+
         }
         $html .= "</div>";
 
