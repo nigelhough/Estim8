@@ -1,4 +1,7 @@
 <?php
+
+namespace PointsPoker;
+
     //Error Reporting should be turned on in dev server config
     //These should never be pushed to production
     //Perhaps need a config or environment settings
@@ -9,7 +12,7 @@
 
     require_once SITE_ROOT.'app/pointsPokerGUI.php';
 
-    $ui = new pointsPokerGUI();
+    $ui = new UI\pointsPokerGUI();
 
 
 

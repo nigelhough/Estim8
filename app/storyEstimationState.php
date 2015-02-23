@@ -1,4 +1,7 @@
 <?php
+
+namespace PointsPoker\storyEstimation;
+
 /**
  * Story Estimation State
  *

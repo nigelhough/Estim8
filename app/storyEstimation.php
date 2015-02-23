@@ -1,4 +1,7 @@
 <?php
+
+namespace PointsPoker\storyEstimation;
+
 require_once SITE_ROOT.'app/storyEstimationState.php';
 
 /**

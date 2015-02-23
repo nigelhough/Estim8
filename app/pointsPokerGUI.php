@@ -1,4 +1,7 @@
 <?php
+
+namespace PointsPoker\UI;
+
 require_once SITE_ROOT.'app/storyEstimation.php';
 require_once SITE_ROOT.'app/storyEstimationState.php';
 
@@ -37,7 +40,7 @@ class pointsPokerGUI
      *
      */
     public function __construct() {
-        $this->storyEstimation = new storyEstimation();
+        $this->storyEstimation = new \pointsPoker\storyEstimation\storyEstimation();
         $this->pointsPokerGUI();
     }
     
@@ -56,20 +59,20 @@ class pointsPokerGUI
         
         switch($status) {
 
-            case storyEstimationState::VOTING:
+            case \pointsPoker\storyEstimation\storyEstimationState::VOTING:
                 // Story added, show the voting buttons
                 $this->showStory();
                 $this->showVotingOptions();
                 $this->showButtons();
                 break;
-            case storyEstimationState::ESTIMATE:
+            case \pointsPoker\storyEstimation\storyEstimationState::ESTIMATE:
                 // Story added, votes add, show summary screen to choose vote
                 $this->showStory();
                 $this->showVoteSummary();
                 $this->showVotingOptions();               
                 $this->showButtons();
                 break;
-            case storyEstimationState::RESULT:
+            case \pointsPoker\storyEstimation\storyEstimationState::RESULT:
                 // Story added, votes add, final vote chosen, show overall
                 $this->showStory();
                 $this->showVoteSummary();
@@ -138,11 +141,11 @@ class pointsPokerGUI
      */
     private function showButtons() {
         $html = '<div class="poker-buttons-pane">';
-        if($this->storyEstimation->getState() === storyEstimationState::VOTING) {
+        if($this->storyEstimation->getState() === \pointsPoker\storyEstimation\storyEstimationState::VOTING) {
             if($this->storyEstimation->getVotesCount()) {
                 $html .= "<a href='?end_voting=1' class='poker-button btn btn-success'>Finish Voting</a>";
             }
-        } else if($this->storyEstimation->getState() === storyEstimationState::ESTIMATE) {
+        } else if($this->storyEstimation->getState() === \pointsPoker\storyEstimation\storyEstimationState::ESTIMATE) {
             if($this->storyEstimation->getVotesCount()) {
                 $html .= "<a href='?re-vote=1' class='poker-button btn btn-info'>Re-Vote</a>";
             }
@@ -180,7 +183,7 @@ class pointsPokerGUI
     private function showVotingOptions() {
         
         $param = 'vote';
-        if($this->storyEstimation->getState() === storyEstimationState::ESTIMATE) {
+        if($this->storyEstimation->getState() === \pointsPoker\storyEstimation\storyEstimationState::ESTIMATE) {
             
             $html = "<br/><h4>Final Story Estimate</h4>";
             $param = 'estimate';
