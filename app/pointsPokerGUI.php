@@ -6,7 +6,7 @@ require_once SITE_ROOT.'app/storyEstimation.php';
 require_once SITE_ROOT.'app/storyEstimationState.php';
 
 /**
- * Points Poker
+ * Points Poker UI
  *
  * An Interactive Points Poker tool to help support Agile teams with story estimation
  *
@@ -212,7 +212,7 @@ class pointsPokerGUI
     private function showStory() {
         
         $html = "<h2>User Story: </h3>
-        <div class='well'>". nl2br($this->storyEstimation->getUserStory()) . "</div>
+        <div class='well'>". nl2br($this->storyEstimation->getStory()) . "</div>
         <h4>".$this->storyEstimation->getVotingRound()." Voting Round</h4>
         <h4>".$this->storyEstimation->getVotesCount()." Votes logged</h4>";
 

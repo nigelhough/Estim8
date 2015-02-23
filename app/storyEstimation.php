@@ -3,6 +3,7 @@
 namespace PointsPoker\storyEstimation;
 
 require_once SITE_ROOT.'app/storyEstimationState.php';
+require_once SITE_ROOT.'app/story.php';
 
 /**
  * Story Estimation
@@ -171,12 +172,11 @@ class storyEstimation {
     /**
      * Reset Session
      *
-     *
      */
     public function reset() {
         //Reset Class Variables
         $this->setSessionID(null);
-        $this->story = null;
+        unset($this->story);
         $this->result = null;
         $this->votingRounds = array(array());
         $this->setState(storyEstimationState::INITIAL);
@@ -184,7 +184,6 @@ class storyEstimation {
 
     /**
      * Set SessionID
-     *
      *
      */
     public function setSessionID($sessionID) {
@@ -285,8 +284,8 @@ class storyEstimation {
      *
      * @return string
      */
-    public function getUserStory() {
-        return $this->story;
+    public function getStory() {
+        return $this->story->getStoryDescription();
     }
     
     
@@ -303,11 +302,11 @@ class storyEstimation {
     /*
      * Set the points poker story
      *
-     * @var string
+     * @var story
      */
     private function setStory($story) {
         $_SESSION['POINTS_POKER'][$this->sessionID]['STORY'] = $story;
-        $this->story = $story;
+        $this->story = new \PointsPoker\Story\story($story);
     }
 
     /*
