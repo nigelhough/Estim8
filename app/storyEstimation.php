@@ -137,10 +137,12 @@ class storyEstimation {
         }
 
         //If we are at voting state and a vote is passed
+        //and the vote count is passed and it matches the current count (prevent double submission)
         if($this->state === storyEstimationState::VOTING
         && isset($userInput['vote'])
-        && $userInput['vote'] != '') {
-
+        && $userInput['vote'] != ''
+        && isset($userInput['count'])
+        && intval($userInput['count']) === $this->getVotesCount()) {
             //Add vote
             $this->addVote($userInput['vote']);
         }
