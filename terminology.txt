@@ -1,0 +1,17 @@
+### A summary of Project Terminology
+
+EstimationSession = A session for estimating many stories
+
+StoryEstimation = Estimating a single story
+
+Voting Round = A round of voting during story estimation
+
+Vote = A estimate fora story
+
+Story = A user story to be estimated
+
+StoryEstimate = The final story estimate
+
+User = A user that will vote on a stories weight
+
+Administrator / Master = A user that will control the voting Estimation Session

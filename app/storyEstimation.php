@@ -1,10 +1,10 @@
 <?php
-require_once SITE_ROOT.'app/pointsPokerState.php';
+require_once SITE_ROOT.'app/storyEstimationState.php';
 
 /**
- * Points Poker
+ * Story Estimation
  *
- * An Interactive Points Poker tool to help support Agile teams with story estimation
+ * The Estimation of a Single Story
  *
  * PHP version 5
  *
@@ -14,23 +14,23 @@ require_once SITE_ROOT.'app/pointsPokerState.php';
  */
 
 /**
- * Points Poker Class
+ * Story Estimation
  *
  * @category Points Poker
  * @author   Nigel Hough <nigel@nigelhough.co.uk>
  * @link     TBC
  */
-class pointsPoker {
+class storyEstimation {
 
     /**
-     * Current State of a Points Poker Session
+     * Current State
      *
      * @var int (pointsPokerState)
      */
-    private $state = pointsPokerState::INITIAL;
+    private $state = storyEstimationState::INITIAL;
 
     /**
-     * ID for the current Points Poker Session
+     * ID for the current Story Estimation
      *
      * @var string
      */
@@ -44,18 +44,18 @@ class pointsPoker {
     private $story = null;
 
     /**
-     * Result for Current Session
+     * Estimate, the final agreed estimate from the story estimation
      *
      * @var int
      */
-    private $result = null;
+    private $estimate = null;
 
     /**
      * Array of all votes cast
      *
      * @var array
      */
-    private $votes = array(array());
+    private $votingRounds = array(array());
     
     /*
      * Set the points poker result
@@ -85,27 +85,27 @@ class pointsPoker {
         && $_SESSION['POINTS_POKER'][$this->sessionID]['STORY'] != '') {
             //Set the class story and we are at least at voting stage
             $this->setStory($_SESSION['POINTS_POKER'][$this->sessionID]['STORY']);
-            $this->setState(pointsPokerState::VOTING);
+            $this->setState(storyEstimationState::VOTING);
         }
 
         //Load Votes from Session
         if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'])
         && is_array($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'])
         && count($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES']) > 0) {
-            $this->votes = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
+            $this->votingRounds = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
         }
 
         //If a Result has been submitted, we are at the results stage
         if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'])
         && $_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'] != null) {
-            $this->setResult($_SESSION['POINTS_POKER'][$this->sessionID]['RESULT']);
-            $this->setState(pointsPokerState::RESULT);
+            $this->setEstimate($_SESSION['POINTS_POKER'][$this->sessionID]['RESULT']);
+            $this->setState(storyEstimationState::RESULT);
         }
 
-        //If a Decsion is set we are at results stage
-        if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['DECISION'])
-        && $_SESSION['POINTS_POKER'][$this->sessionID]['DECISION'] != null) {
-            $this->setState(pointsPokerState::RESULT);
+        //If an Estimate is set we are at results stage
+        if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['ESTIMATE'])
+        && $_SESSION['POINTS_POKER'][$this->sessionID]['ESTIMATE'] != null) {
+            $this->setState(storyEstimationState::RESULT);
         }
 
     }
@@ -123,17 +123,17 @@ class pointsPoker {
         }
 
         //If we are at initial state and a story is passed
-        if($this->state === pointsPokerState::INITIAL
+        if($this->state === storyEstimationState::INITIAL
         && isset($userInput['userStory'])
         && $userInput['userStory'] != '') {
 
             //Set User Story
             $this->setStory($userInput['userStory']);
-            $this->setState(pointsPokerState::VOTING);
+            $this->setState(storyEstimationState::VOTING);
         }
 
         //If we are at voting state and a vote is passed
-        if($this->state === pointsPokerState::VOTING
+        if($this->state === storyEstimationState::VOTING
         && isset($userInput['vote'])
         && $userInput['vote'] != '') {
 
@@ -141,27 +141,27 @@ class pointsPoker {
             $this->addVote($userInput['vote']);
         }
 
-        //If we are at voting state and a final decision is passed
-        if($this->state === pointsPokerState::VOTING
+        //If we are at voting state and a final estimate is passed
+        if($this->state === storyEstimationState::VOTING
         && isset($userInput['end_voting'])
         && $userInput['end_voting']
         && isset($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'][0])) {
-            //Set to make decsion mode
-            $this->setState(pointsPokerState::DECISION);
+            //Set to make estimate mode
+            $this->setState(storyEstimationState::ESTIMATE);
         }
 
-        //If a final decision is passed
-        if(isset($userInput['decision']) && $userInput['decision'] != '') {
+        //If a final estimate is passed
+        if(isset($userInput['estimate']) && $userInput['estimate'] != '') {
             //Set the result
-            $this->setResult($userInput['decision']);
-            $this->setState(pointsPokerState::RESULT);
+            $this->setEstimate($userInput['estimate']);
+            $this->setState(storyEstimationState::RESULT);
         }
 
         //If a re-vote is passed,
         if(isset($userInput['re-vote']) && $userInput['re-vote'] != '') {
             array_unshift($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'],array());
             $this->votes = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
-            $this->setState(pointsPokerState::VOTING);
+            $this->setState(storyEstimationState::VOTING);
         }
     }
 
@@ -175,8 +175,8 @@ class pointsPoker {
         $this->setSessionID(null);
         $this->story = null;
         $this->result = null;
-        $this->votes = array(array());
-        $this->setState(pointsPokerState::INITIAL);
+        $this->votingRounds = array(array());
+        $this->setState(storyEstimationState::INITIAL);
     }
 
     /**
@@ -204,7 +204,7 @@ class pointsPoker {
      * @return int
      */
     public function getNoVotingRounds() {
-        return count($this->votes);
+        return count($this->votingRounds);
     }
 
     /**
@@ -224,8 +224,8 @@ class pointsPoker {
      *
      * @return array
      */
-    public function getVotes() {
-        return $this->votes;
+    public function getVotingRounds() {
+        return $this->votingRounds;
     }
 
     /**
@@ -234,7 +234,7 @@ class pointsPoker {
      * @return array
      */
     public function getCurrentVotes() {
-        return $this->votes[0];
+        return $this->votingRounds[0];
     }
 
     /**
@@ -243,7 +243,7 @@ class pointsPoker {
      *
      */
     public function getVotesCount() {
-        return count($this->votes[0]);
+        return count($this->votingRounds[0]);
     }
     
     /**
@@ -256,15 +256,11 @@ class pointsPoker {
             $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'][0] = array();
         }
         $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'][0][] = $vote;
-        $this->votes = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
+        $this->votingRounds = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
     }
     
     /**
      * Returns an integer of the current State.
-     *  0 = initial, no user story
-     *  1 = user story, collect vote/s
-     *  2 = user story and votes collected, allow user to select overall vote
-     *  3 = user story, votes, and final vote - show info and reset button
      *
      * @return int (pointsPoketState)
      */
@@ -316,18 +312,18 @@ class pointsPoker {
      *
      * @var int
      */
-    private function setResult($result) {
-        $_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'] = $result;
-        $this->result = intval($result);
+    private function setEstimate($estimate) {
+        $_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'] = $estimate;
+        $this->estimate = intval($estimate);
     }
 
     /**
-     * Returns the overall story vote
+     * Returns the agreed story estimate
      *
      * @return int
      */
-    public function getResult() {
-        return $this->result;
+    public function getEstimate() {
+        return $this->estimate;
     }
 
     /**

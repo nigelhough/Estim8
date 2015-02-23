@@ -1,6 +1,6 @@
 <?php
-require_once SITE_ROOT.'app/pointsPoker.php';
-require_once SITE_ROOT.'app/pointsPokerState.php';
+require_once SITE_ROOT.'app/storyEstimation.php';
+require_once SITE_ROOT.'app/storyEstimationState.php';
 
 /**
  * Points Poker
@@ -26,18 +26,18 @@ class pointsPokerGUI
 {
     
     /*
-     * An instance of the storyClass class
+     * An instance of the storyEstimation class
      *
      * @var class
      */
-    private $storyClass; 
+    private $storyEstimation;
 
     /**
      * Constructor
      *
      */
     public function __construct() {
-        $this->storyClass = new pointsPoker(); 
+        $this->storyEstimation = new storyEstimation();
         $this->pointsPokerGUI();
     }
     
@@ -48,28 +48,28 @@ class pointsPokerGUI
      */
     private function pointsPokerGUI() {
         //Initially Passing POST and SESSION variables so we can upgrade this later
-        if($_REQUEST) $this->storyClass->processInput($_REQUEST);
+        if($_REQUEST) $this->storyEstimation->processInput($_REQUEST);
 
-        $status = $this->storyClass->getState();
+        $status = $this->storyEstimation->getState();
 
         include SITE_ROOT.'templates/header.php';
         
         switch($status) {
 
-            case pointsPokerState::VOTING:
+            case storyEstimationState::VOTING:
                 // Story added, show the voting buttons
                 $this->showStory();
                 $this->showVotingOptions();
                 $this->showButtons();
                 break;
-            case pointsPokerState::DECISION:
+            case storyEstimationState::ESTIMATE:
                 // Story added, votes add, show summary screen to choose vote
                 $this->showStory();
                 $this->showVoteSummary();
                 $this->showVotingOptions();               
                 $this->showButtons();
                 break;
-            case pointsPokerState::RESULT:
+            case storyEstimationState::RESULT:
                 // Story added, votes add, final vote chosen, show overall
                 $this->showStory();
                 $this->showVoteSummary();
@@ -93,7 +93,7 @@ class pointsPokerGUI
      */
     private function showVoteSummary() {
         //Get all the voting rounds
-        $votingRounds = $this->storyClass->getVotes();
+        $votingRounds = $this->storyEstimation->getVotingRounds();
 
         //Flip the array to give the votes in the voted order
         //Array Flip won't work on array of Arrays
@@ -125,7 +125,7 @@ class pointsPokerGUI
      */
     private function showFinalPoints() {
         
-        $html = "<h2>Overall Story Points: ". $this->storyClass->getResult()."</h2>";
+        $html = "<h2>Overall Story Points Estimate: ". $this->storyEstimation->getEstimate()."</h2>";
         
         echo $html;
         
@@ -138,17 +138,17 @@ class pointsPokerGUI
      */
     private function showButtons() {
         $html = '<div class="poker-buttons-pane">';
-        if($this->storyClass->getState() === pointsPokerState::VOTING) {
-            if($this->storyClass->getVotesCount()) {
+        if($this->storyEstimation->getState() === storyEstimationState::VOTING) {
+            if($this->storyEstimation->getVotesCount()) {
                 $html .= "<a href='?end_voting=1' class='poker-button btn btn-success'>Finish Voting</a>";
             }
-        } else if($this->storyClass->getState() === pointsPokerState::DECISION) {
-            if($this->storyClass->getVotesCount()) {
+        } else if($this->storyEstimation->getState() === storyEstimationState::ESTIMATE) {
+            if($this->storyEstimation->getVotesCount()) {
                 $html .= "<a href='?re-vote=1' class='poker-button btn btn-info'>Re-Vote</a>";
             }
         }
 
-        $html .= "<a href='?reset=".$this->storyClass->getSessionID()."' class='poker-button btn btn-danger'>Reset</a>";
+        $html .= "<a href='?reset=".$this->storyEstimation->getSessionID()."' class='poker-button btn btn-danger'>Reset</a>";
         
         $html .= "</div>";
         
@@ -180,10 +180,10 @@ class pointsPokerGUI
     private function showVotingOptions() {
         
         $param = 'vote';
-        if($this->storyClass->getState() === pointsPokerState::DECISION) {
+        if($this->storyEstimation->getState() === storyEstimationState::ESTIMATE) {
             
-            $html = "<br/><h4>Final Voting Decision</h4>";
-            $param = 'decision';
+            $html = "<br/><h4>Final Story Estimate</h4>";
+            $param = 'estimate';
             
         } else {
             
@@ -191,7 +191,7 @@ class pointsPokerGUI
         }
 
         $html .= "<div class='btn-group'>";
-        foreach($this->storyClass->getVotingOptions() as $id => $option) {
+        foreach($this->storyEstimation->getVotingOptions() as $id => $option) {
             
             $html .= "<a href='?$param=".$id."' class='btn btn-default' >".$option."</a>";
             
@@ -209,9 +209,9 @@ class pointsPokerGUI
     private function showStory() {
         
         $html = "<h2>User Story: </h3>
-        <div class='well'>". nl2br($this->storyClass->getUserStory()) . "</div>
-        <h4>".$this->storyClass->getVotingRound()." Voting Round</h4>
-        <h4>".$this->storyClass->getVotesCount()." Votes logged</h4>";
+        <div class='well'>". nl2br($this->storyEstimation->getUserStory()) . "</div>
+        <h4>".$this->storyEstimation->getVotingRound()." Voting Round</h4>
+        <h4>".$this->storyEstimation->getVotesCount()." Votes logged</h4>";
 
         echo $html;
         
