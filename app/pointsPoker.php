@@ -199,11 +199,41 @@ class pointsPoker {
     }
 
     /**
+     * Returns count of voting rounds array
+     *
+     * @return int
+     */
+    public function getNoVotingRounds() {
+        return count($this->votes);
+    }
+
+    /**
+     * Returns current voting round
+     *
+     * @return string
+     */
+    public function getVotingRound() {
+        $noRounds = $this->getNoVotingRounds();
+        $trailing = $this->getSuffics($noRounds);
+
+        return $noRounds.$trailing;
+    }
+
+    /**
+     * Returns an array of all voting rounds, which contain an array of votes
+     *
+     * @return array
+     */
+    public function getVotes() {
+        return $this->votes;
+    }
+
+    /**
      * Returns an array of all the current votes
      * 
      * @return array
      */
-    public function getVotes() {
+    public function getCurrentVotes() {
         return $this->votes[0];
     }
 
@@ -298,6 +328,25 @@ class pointsPoker {
      */
     public function getResult() {
         return $this->result;
+    }
+
+    /**
+     * Returns the trailing for a number
+     *
+     * @return string
+     */
+    private function getSuffics($num) {
+        $trailingNo = substr($num,-1);
+
+        if($trailingNo == 1) {
+            return "st";
+        } else if($trailingNo == 2) {
+            return "nd";
+        } else if($trailingNo == 3) {
+            return "rd";
+        }
+
+        return "th";
     }
 
 }

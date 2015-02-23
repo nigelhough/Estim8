@@ -92,19 +92,29 @@ class pointsPokerGUI
      * 
      */
     private function showVoteSummary() {
+        //Get all the voting rounds
+        $votingRounds = $this->storyClass->getVotes();
 
-        $votes = $this->storyClass->getVotes();
-
-        $html = "<h4>User Votes:</h4>";
-
-        $html .= "<ol>";
-        foreach($votes as $vote) {
-            $html .= "<li>".$vote."</li>";
+        //Flip the array to give the votes in the voted order
+        //Array Flip won't work on array of Arrays
+        //$votingRounds = array_flip($votingRounds);
+        $votingRoundsReveresed = array();
+        foreach($votingRounds as $votes) {
+            array_unshift($votingRoundsReveresed,$votes);
         }
-        $html .= "</ol>";
 
-        echo $html;        
-        
+        $html = "<h4>User Votes</h4>";
+
+        foreach($votingRoundsReveresed as $roundNo => $votes) {
+            $html .= "<h6>Round ".($roundNo+1)."</h6>";
+            $html .= "<ol>";
+            foreach($votes as $vote) {
+                $html .= "<li>" . $vote . "</li>";
+            }
+            $html .= "</ol>";
+        }
+
+        echo $html;
     }    
     
     
@@ -200,6 +210,7 @@ class pointsPokerGUI
         
         $html = "<h2>User Story: </h3>
         <div class='well'>". nl2br($this->storyClass->getUserStory()) . "</div>
+        <h4>".$this->storyClass->getVotingRound()." Voting Round</h4>
         <h4>".$this->storyClass->getVotesCount()." Votes logged</h4>";
 
         echo $html;

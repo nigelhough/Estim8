@@ -3,7 +3,7 @@
     <head>
         <title>Points Poker</title>
         <meta charset="utf-8">
-        <meta name="description" content="An Interactive Points Poker tool to help support Agile teams with story estimation">
+        <meta name="description" content="An Interactive Points Poker tool to help support Agile teams with story points estimation">
 
         <!-- JQuery Library -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -23,6 +23,7 @@
 
         <!-- generic project includes-->
         <script src="js/pointsPoker.js"></script>
+        
         <link rel="stylesheet" href="css/pointsPoker.css">
     </head>
     <body>
