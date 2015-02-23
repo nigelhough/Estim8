@@ -4,3 +4,4 @@ themes/classic/views/
 .idea
 /nbproject/private/
 /nbproject/
+/vendor/*
