@@ -51,7 +51,6 @@ class pointsPokerGUI
         if($_REQUEST) $this->storyClass->processInput($_REQUEST);
 
         $status = $this->storyClass->getState();
-        //var_dump($status);
 
         include SITE_ROOT.'templates/header.php';
         
@@ -97,7 +96,6 @@ class pointsPokerGUI
         $votes = $this->storyClass->getVotes();
 
         $html = "<h4>User Votes:</h4>";
-        
 
         $html .= "<ol>";
         foreach($votes as $vote) {
@@ -134,8 +132,12 @@ class pointsPokerGUI
             if($this->storyClass->getVotesCount()) {
                 $html .= "<a href='?end_voting=1' class='poker-button btn btn-success'>Finish Voting</a>";
             }
-        } 
-        
+        } else if($this->storyClass->getState() === pointsPokerState::DECISION) {
+            if($this->storyClass->getVotesCount()) {
+                $html .= "<a href='?re-vote=1' class='poker-button btn btn-info'>Re-Vote</a>";
+            }
+        }
+
         $html .= "<a href='?reset=".$this->storyClass->getSessionID()."' class='poker-button btn btn-danger'>Reset</a>";
         
         $html .= "</div>";
