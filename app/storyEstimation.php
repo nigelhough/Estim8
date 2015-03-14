@@ -233,8 +233,8 @@ class storyEstimation {
      *
      * @return string
      */
-    public function getVotingRound() {
-        $noRounds = $this->getNoVotingRounds();
+    public function getVotingRound($offset=0) {
+        $noRounds = $this->getNoVotingRounds()+$offset;
         $trailing = $this->getSuffics($noRounds);
 
         return $noRounds.$trailing;
