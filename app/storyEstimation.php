@@ -72,44 +72,42 @@ class storyEstimation {
      * Constructor
      */
     function __construct() {
-        session_start();
-
         $this->initVotingOptionsGeneratorAlgorithm();
 
         //Check for a Points Poker Session ID, could be used in future multi user games
-        if(!(isset($_SESSION['POINTS_POKER'])
-        && isset($_SESSION['POINTS_POKER']['SESSION_ID'])
-        && $_SESSION['POINTS_POKER']['SESSION_ID'] != '')) {
+        if(!(isset($_SESSION['ESTIM8'])
+        && isset($_SESSION['ESTIM8']['SESSION_ID'])
+        && $_SESSION['ESTIM8']['SESSION_ID'] != '')) {
             //If a Session ID doesn't exist, Create One
-            $_SESSION['POINTS_POKER']['SESSION_ID'] = md5(uniqid());
+            $_SESSION['ESTIM8']['SESSION_ID'] = md5(uniqid());
         }
-        $this->sessionID = $_SESSION['POINTS_POKER']['SESSION_ID'];
+        $this->sessionID = $_SESSION['ESTIM8']['SESSION_ID'];
 
         //See if a story has already been logged against this session
-        if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['STORY'])
-        && $_SESSION['POINTS_POKER'][$this->sessionID]['STORY'] != '') {
+        if(isset($_SESSION['ESTIM8'][$this->sessionID]['STORY'])
+        && $_SESSION['ESTIM8'][$this->sessionID]['STORY'] != '') {
             //Set the class story and we are at least at voting stage
-            $this->setStory($_SESSION['POINTS_POKER'][$this->sessionID]['STORY']);
+            $this->setStory($_SESSION['ESTIM8'][$this->sessionID]['STORY']);
             $this->setState(storyEstimationState::VOTING);
         }
 
         //Load Votes from Session
-        if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'])
-        && is_array($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'])
-        && count($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES']) > 0) {
-            $this->votingRounds = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
+        if(isset($_SESSION['ESTIM8'][$this->sessionID]['VOTES'])
+        && is_array($_SESSION['ESTIM8'][$this->sessionID]['VOTES'])
+        && count($_SESSION['ESTIM8'][$this->sessionID]['VOTES']) > 0) {
+            $this->votingRounds = $_SESSION['ESTIM8'][$this->sessionID]['VOTES'];
         }
 
         //If a Result has been submitted, we are at the results stage
-        if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'])
-        && $_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'] != null) {
-            $this->setEstimate($_SESSION['POINTS_POKER'][$this->sessionID]['RESULT']);
+        if(isset($_SESSION['ESTIM8'][$this->sessionID]['RESULT'])
+        && $_SESSION['ESTIM8'][$this->sessionID]['RESULT'] != null) {
+            $this->setEstimate($_SESSION['ESTIM8'][$this->sessionID]['RESULT']);
             $this->setState(storyEstimationState::RESULT);
         }
 
         //If an Estimate is set we are at results stage
-        if(isset($_SESSION['POINTS_POKER'][$this->sessionID]['ESTIMATE'])
-        && $_SESSION['POINTS_POKER'][$this->sessionID]['ESTIMATE'] != null) {
+        if(isset($_SESSION['ESTIM8'][$this->sessionID]['ESTIMATE'])
+        && $_SESSION['ESTIM8'][$this->sessionID]['ESTIMATE'] != null) {
             $this->setState(storyEstimationState::RESULT);
         }
 
@@ -170,7 +168,7 @@ class storyEstimation {
         if($this->state === storyEstimationState::VOTING
         && isset($userInput['end_voting'])
         && $userInput['end_voting']
-        && isset($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'][0])) {
+        && isset($_SESSION['ESTIM8'][$this->sessionID]['VOTES'][0])) {
             //Set to make estimate mode
             $this->setState(storyEstimationState::ESTIMATE);
         }
@@ -184,8 +182,8 @@ class storyEstimation {
 
         //If a re-vote is passed,
         if(isset($userInput['re-vote']) && $userInput['re-vote'] != '') {
-            array_unshift($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'],array());
-            $this->votes = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
+            array_unshift($_SESSION['ESTIM8'][$this->sessionID]['VOTES'],array());
+            $this->votes = $_SESSION['ESTIM8'][$this->sessionID]['VOTES'];
             $this->setState(storyEstimationState::VOTING);
         }
     }
@@ -208,7 +206,7 @@ class storyEstimation {
      *
      */
     public function setSessionID($sessionID) {
-        $_SESSION['POINTS_POKER']['SESSION_ID'] = $sessionID;
+        $_SESSION['ESTIM8']['SESSION_ID'] = $sessionID;
         $this->sessionID = $sessionID;
     }
 
@@ -275,11 +273,11 @@ class storyEstimation {
      * 
      */
     public function addVote($vote) {
-        if(!isset($_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'][0])) {
-            $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'][0] = array();
+        if(!isset($_SESSION['ESTIM8'][$this->sessionID]['VOTES'][0])) {
+            $_SESSION['ESTIM8'][$this->sessionID]['VOTES'][0] = array();
         }
-        $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'][0][] = $vote;
-        $this->votingRounds = $_SESSION['POINTS_POKER'][$this->sessionID]['VOTES'];
+        $_SESSION['ESTIM8'][$this->sessionID]['VOTES'][0][] = $vote;
+        $this->votingRounds = $_SESSION['ESTIM8'][$this->sessionID]['VOTES'];
     }
     
     /**
@@ -326,8 +324,8 @@ class storyEstimation {
      * @var story
      */
     private function setStory($story) {
-        $_SESSION['POINTS_POKER'][$this->sessionID]['STORY'] = $story;
-        $this->story = new \PointsPoker\Story\story($story);
+        $_SESSION['ESTIM8'][$this->sessionID]['STORY'] = $story;
+        $this->story = new \estim8\Story\story($story);
     }
 
     /*
@@ -336,7 +334,7 @@ class storyEstimation {
      * @var int
      */
     private function setEstimate($estimate) {
-        $_SESSION['POINTS_POKER'][$this->sessionID]['RESULT'] = $estimate;
+        $_SESSION['ESTIM8'][$this->sessionID]['RESULT'] = $estimate;
         $this->estimate = intval($estimate);
     }
 
