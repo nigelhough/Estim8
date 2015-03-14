@@ -1,9 +1,14 @@
+<?php
+//echo '<br/><br/>';
+//var_dump($_SESSION);
+?>
+
         </div>
         <footer class="footer">
             <p>Built by The Fun Group</p>
-            <p class="pull-right">All source avaliable @ <a href="https://github.com/nigelhough/points_poker">https://github.com/nigelhough/points_poker</a></p>
+            <p>All source avaliable at
+                <a href="<?= \Utils\Config::get("repository") ?>"><?= \Utils\Config::get("repository") ?></a>
+            </p>
         </footer>
     </body>
 </html>
-        <?php
-        var_dump($_SESSION);
