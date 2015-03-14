@@ -1,0 +1,21 @@
+body {
+    padding-top: 65px;
+}
+
+textarea {
+    resize: none;
+}
+
+.poker-buttons-pane {
+    margin: 5px 0 5px 0;
+}
+
+.poker-button {
+    margin: 5px;
+}
+
+.footer {
+    background-color: #eee;
+    padding: 2px 10px;
+    margin-top: 20px;
+}
