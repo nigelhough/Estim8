@@ -1,6 +1,6 @@
 <?php
 
-namespace PointsPoker\Story;
+namespace estim8\Story;
 
 /**
  * Story

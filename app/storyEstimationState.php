@@ -1,6 +1,6 @@
 <?php
 
-namespace PointsPoker\storyEstimation;
+namespace estim8\storyEstimation;
 
 /**
  * Story Estimation State
