@@ -209,12 +209,20 @@ class pointsPokerGUI
      *
      * 
      */
-    private function showStory() {
-        
+    private function showStory()
+    {
+
         $html = "<h2>User Story: </h3>
-        <div class='well'>". nl2br($this->storyEstimation->getStory()) . "</div>
-        <h4>".$this->storyEstimation->getVotingRound()." Voting Round</h4>
-        <h4>".$this->storyEstimation->getVotesCount()." Votes logged</h4>";
+        <div class='well'>" . nl2br($this->storyEstimation->getStory()) . "</div>";
+
+        if(!isset($_GET['re-vote'])) {
+            $html .= "<h4>".$this->storyEstimation->getVotingRound() . " Voting Round</h4>
+            <h4>" . $this->storyEstimation->getVotesCount() . " Votes logged</h4>";
+
+        } else {
+            $html .= "<h4>".$this->storyEstimation->getVotingRound(1) . " Voting Round</h4>
+            <h4>0 Votes logged</h4>";
+        }
 
         echo $html;
         
